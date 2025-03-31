@@ -6,20 +6,20 @@ from app.logger import logger
 
 async def main():
     agent = Manus()
-    while True:
-        try:
-            prompt = input("Enter your prompt (or 'exit' to quit): ")
-            if prompt.lower() == "exit":
-                logger.info("Goodbye!")
-                break
-            if prompt.strip().isspace():
-                logger.warning("Skipping empty prompt.")
-                continue
-            logger.warning("Processing your request...")
-            await agent.run(prompt)
-        except KeyboardInterrupt:
-            logger.warning("Goodbye!")
-            break
+    try:
+        prompt = input("Enter your prompt: ")
+        if not prompt.strip():
+            logger.warning("Empty prompt provided.")
+            return
+
+        logger.warning("Processing your request...")
+        await agent.run(prompt)
+        logger.info("Request processing completed.")
+    except KeyboardInterrupt:
+        logger.warning("Operation interrupted.")
+    finally:
+        # Ensure agent resources are cleaned up before exiting
+        await agent.cleanup()
 
 
 if __name__ == "__main__":
